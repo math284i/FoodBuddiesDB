@@ -1,4 +1,132 @@
-# must contain:
-# (1) the statements used to create the database, its tables and views (as used in section 5 of the report)
-# (2) the statements used to populate the tables (as used in section 6)
-# Rasmus dum
+CREATE DATABASE FoodBuddies;
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS Theme;
+DROP TABLE IF EXISTS Feast;
+DROP TABLE IF EXISTS TimeSlot;
+DROP TABLE IF EXISTS Friends;
+DROP TABLE IF EXISTS Attendee;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Rating;
+DROP TABLE IF EXISTS Restaurant;
+DROP TABLE IF EXISTS Menu;
+DROP TABLE IF EXISTS Brand;
+DROP TABLE IF EXISTS Likes;
+DROP TABLE IF EXISTS FoodType;
+DROP TABLE IF EXISTS Describes;
+DROP TABLE IF EXISTS Dish;
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE Theme
+	(FeastID		VARCHAR(5),
+    FoodName		VARCHAR(40),
+    PRIMARY KEY(FeastID,FoodName),
+    FOREIGN KEY(FeastID) REFERENCES Feast(FeastID) ON DELETE CASCADE
+	);
+    
+CREATE TABLE Feast
+	(FeastID		VARCHAR(5),
+    TimeSlotID		VARCHAR(5) NOT NULL,
+    RestaurantID	VARCHAR(5) NOT NULL,
+    EventName		VARCHAR(5),
+    PRIMARY KEY(FeastID),
+    FOREIGN KEY(TimeSlotID) REFERENCES TimeSlot(TimeSlotID) ON DELETE CASCADE,
+    FOREIGN KEY(RestaurantID) REFERENCES Restaurant(RestaurantID) ON DELETE CASCADE
+	);
+
+CREATE TABLE TimeSlot
+	(TimeSlotID 	VARCHAR(5),
+	 DayCode		ENUM('M','T','W','R','F','S','U'),
+	 StartTime		TIME,
+	 EndTime		TIME,
+	 PRIMARY KEY(TimeSlotID, DayCode, StartTime)
+	);
+
+CREATE TABLE Friends
+	(UserID			VARCHAR(5),
+    FriendID		VARCHAR(5),
+    PRIMARY KEY(UserID,FriendID),
+    FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+    FOREIGN KEY(FriendID) REFERENCES Users(UserID) ON DELETE CASCADE
+	);
+
+CREATE TABLE Attendee
+	(FeastID		VARCHAR(5),
+    UserID			VARCHAR(5),
+    PRIMARY KEY(FeastID,UserID),
+    FOREIGN KEY(FeastID) REFERENCES Feast(FeastID) ON DELETE CASCADE,
+    FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+	);
+
+CREATE TABLE Users
+	(UserID			VARCHAR(5),
+    FirstName		VARCHAR(20),
+    LastName		VARCHAR(20),
+    Country			VARCHAR(20),
+    ZipCode			INT(10),
+    PRIMARY KEY(UserID)
+	);
+
+CREATE TABLE Rating
+	(UserID			VARCHAR(5),
+    RestaurantID	VARCHAR(5),
+    Score			DECIMAL(2,0),
+    PRIMARY KEY(UserID,RestaurantID),
+    FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+    FOREIGN KEY(RestaurantID) REFERENCES Restaurant(RestaurantID) ON DELETE CASCADE
+	);
+
+CREATE TABLE Restaurant
+	(RestaurantID	VARCHAR(5),
+    BrandID			VARCHAR(5) NOT NULL,
+    AverageRating	DECIMAL(3,1),
+    RestaurantName	VARCHAR(20),
+    Country			VARCHAR(20),
+    ZipCode			INT(10),
+    StreetName		VARCHAR(20),
+    StreetNr		INT(4),
+    PRIMARY KEY(RestaurantID),
+    FOREIGN KEY(BrandID) REFERENCES Brand(BrandID) ON DELETE CASCADE
+	);
+
+CREATE TABLE Menu
+	(MenuID			VARCHAR(5),
+    RestaurantID	VARCHAR(5),
+    MenuName		VARCHAR(20),
+    PRIMARY KEY(MenuID),
+    FOREIGN KEY(RestaurantID) REFERENCES Restaurant(RestaurantID) ON DELETE SET NULL
+	);
+
+CREATE TABLE Brand
+	(BrandID		VARCHAR(5),
+    BrandName		VARCHAR(20),
+    PRIMARY KEY(BrandID)
+	);
+
+CREATE TABLE Likes
+	(UserID			VARCHAR(5),
+    FoodName		VARCHAR(20),
+    PRIMARY KEY(UserID,FoodName),
+    FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+	);
+
+CREATE TABLE Describes
+	(DishID			VARCHAR(5) NOT NULL,
+    FoodName		VARCHAR(20) NOT NULL,
+    PRIMARY KEY(DishID,FoodName),
+    FOREIGN KEY(DishID) REFERENCES Dish(DishID) ON DELETE CASCADE
+	);
+
+CREATE TABLE Dish
+	(DishID			VARCHAR(5),
+    MenuID			VARCHAR(5) NOT NULL,
+    DishName		VARCHAR(20),
+    DishPrice		DECIMAL(6,2),
+    PRIMARY KEY(DishID),
+    FOREIGN KEY(MenuID) REFERENCES Menu(MenuID) ON DELETE CASCADE
+	);
+
+CREATE VIEW FoodTypes AS SELECT FoodName FROM Theme NATURAL JOIN Likes NATURAL JOIN Describes GROUP BY FoodName;
+
+CREATE VIEW Ratings AS SELECT CONCAT(FirstName, ' ', LastName) AS Critic,Score,RestaurantName FROM Users NATURAL JOIN Rating NATURAL JOIN Restaurant
+
