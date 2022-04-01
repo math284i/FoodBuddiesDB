@@ -21,3 +21,15 @@ SELECT FirstName,LastName,FoodType FROM Users NATURAL JOIN Likes WHERE FoodType 
 SELECT x.Attendee,x.EventName,RestaurantName,Country,ZipCode,CONCAT(StreetName, ' ', StreetNr) AS Address,x.Dato FROM Restaurant NATURAL JOIN Brand NATURAL JOIN
 (SELECT CONCAT(FirstName, ' ', LastName) As Attendee,EventName,RestaurantID,Dato FROM Users NATURAL JOIN Attendee NATURAL JOIN Feast NATURAL JOIN TimeSlot
 ) AS x WHERE BrandName = 'Mafia' ORDER BY x.Dato;
+
+
+
+SET GLOBAL evenet_scheduler = 1;
+DROP TABLE IF EXISTS HighestRating;
+CREATE TABLE HighestRating(
+RestaurantName VARCHAR(20), Rating DECIMAL(2, 0));
+
+CREATE EVENT RatingInsert 
+ON SCHEDULE EVERY 1 MINUTE
+DO INSERT HighestRating VALUES((SELECT RestaurantName, AverageRating FROM Restaurant WHERE MAX(AverageRating) = AverageRating))
+
