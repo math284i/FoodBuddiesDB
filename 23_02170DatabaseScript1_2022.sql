@@ -140,17 +140,17 @@ INSERT TimeSlot VALUES
 	('C','2022-04-09','8:00','11:00');
 
 INSERT Restaurant VALUES
-	('R0','B0','0','Maccen','Denmark','2820','Nybrovej','2'),
-    ('R1','B0','0','il McDonald','Italy','53100','Via Fiorentina','122'),
-    ('R2','B1','0','Mediterraneo','Denmark','3500','Ballerupvej','16'),
-    ('R3','B3','0','KFC CPH ','Denmark','1550','Rådhuspladesen','55'),
-    ('R4','B3','0','KFC FYN','Denmark','5220','Ejbygade','2'),
-    ('R5','B3','0','KFC JYD','Denmark','8210','Blomstervej','2k'),
-    ('R6','B2','0','La Sosta','Denmark','2800','Carlshøjvej','49'),
-    ('R7','B2','0','Roma','Denmark','2760','Liljevangsvej','6'),
-    ('R8','B2','0','Baba\'s Pizza','Denmark','2400','Frederiksgade','4'),
-    ('R9','B2','0','Bona Pizza','Italy','00186','Via del Portico d\'Ottavia','7'),
-    ('R10','B2','0','Panta Pizza','Italy','53100','Via Pantaneto','80');
+	('R0','B0',NULL,'Maccen','Denmark','2820','Nybrovej','2'),
+    ('R1','B0',NULL,'il McDonald','Italy','53100','Via Fiorentina','122'),
+    ('R2','B1',NULL,'Mediterraneo','Denmark','3500','Ballerupvej','16'),
+    ('R3','B3',NULL,'KFC CPH ','Denmark','1550','Rådhuspladesen','55'),
+    ('R4','B3',NULL,'KFC FYN','Denmark','5220','Ejbygade','2'),
+    ('R5','B3',NULL,'KFC JYD','Denmark','8210','Blomstervej','2k'),
+    ('R6','B2',NULL,'La Sosta','Denmark','2800','Carlshøjvej','49'),
+    ('R7','B2',NULL,'Roma','Denmark','2760','Liljevangsvej','6'),
+    ('R8','B2',NULL,'Baba\'s Pizza','Denmark','2400','Frederiksgade','4'),
+    ('R9','B2',NULL,'Bona Pizza','Italy','00186','Via del Portico d\'Ottavia','7'),
+    ('R10','B2',NULL,'Panta Pizza','Italy','53100','Via Pantaneto','80');
 
 INSERT Feast VALUES
 	('F0','A','R9','Pre-dinner wine tasting'),
