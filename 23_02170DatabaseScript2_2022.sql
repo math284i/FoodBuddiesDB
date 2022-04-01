@@ -18,7 +18,6 @@ SELECT FirstName,LastName,FoodType FROM Users NATURAL JOIN Likes WHERE FoodType 
 #Showing everybody going to an event at a restaurant owned by the Mafia with the soonest event first
 SELECT x.Attendee,x.EventName,RestaurantName,Country,ZipCode,CONCAT(StreetName, ' ', StreetNr) AS Address,x.Dato FROM Restaurant NATURAL JOIN Brand NATURAL JOIN
 (SELECT CONCAT(FirstName, ' ', LastName) As Attendee,EventName,RestaurantID,Dato FROM Users NATURAL JOIN Attendee NATURAL JOIN Feast NATURAL JOIN TimeSlot
-<<<<<<< HEAD
 ) AS x WHERE BrandName = 'McDonald\'s' ORDER BY x.Dato;
 
 #8
@@ -68,8 +67,7 @@ BEGIN
     WHERE RestaurantID = NEW.RestaurantID;
 END $$
 DELIMITER ;
-=======
-) AS x WHERE BrandName = 'Mafia' ORDER BY x.Dato;
+
 
 
 
