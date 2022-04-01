@@ -24,12 +24,14 @@ SELECT x.Attendee,x.EventName,RestaurantName,Country,ZipCode,CONCAT(StreetName, 
 
 
 
-SET GLOBAL evenet_scheduler = 1;
+SET GLOBAL event_scheduler = 1;
 DROP TABLE IF EXISTS HighestRating;
+DROP EVENT IF EXISTS RatingInsert;
 CREATE TABLE HighestRating(
 RestaurantName VARCHAR(20), Rating DECIMAL(2, 0));
 
 CREATE EVENT RatingInsert 
-ON SCHEDULE EVERY 1 MINUTE
-DO INSERT HighestRating VALUES((SELECT RestaurantName, AverageRating FROM Restaurant WHERE MAX(AverageRating) = AverageRating))
+ON SCHEDULE EVERY 2 MINUTE
+DO INSERT HighestRating VALUES((SELECT RestaurantName FROM Restaurant WHERE (SELECT MAX(AverageRating) FROM Restaurant) = AverageRating LIMIT 1), (SELECT AverageRating FROM Restaurant WHERE (SELECT MAX(AverageRating) FROM Restaurant) = AverageRating LIMIT 1));
 
+SELECT * FROM HighestRating;
