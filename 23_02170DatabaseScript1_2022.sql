@@ -13,7 +13,7 @@ CREATE TABLE Users
     FirstName		VARCHAR(20),
     LastName		VARCHAR(20),
     Country			VARCHAR(20),
-    ZipCode			INT(10),
+    ZipCode			VARCHAR(10),
     PRIMARY KEY(UserID)
 	);
     
@@ -66,8 +66,8 @@ CREATE TABLE Users
     
     CREATE TABLE Likes
 	(UserID			VARCHAR(5),
-    FoodName		VARCHAR(20),
-    PRIMARY KEY(UserID,FoodName),
+    FoodType		VARCHAR(20),
+    PRIMARY KEY(UserID,FoodType),
     FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 	);
     
@@ -83,7 +83,7 @@ CREATE TABLE Users
     CREATE TABLE Dish
 	(DishID			VARCHAR(5),
     MenuID			VARCHAR(5) NOT NULL,
-    DishName		VARCHAR(20),
+    DishName		VARCHAR(40),
     DishPrice		DECIMAL(6,2),
     PRIMARY KEY(DishID),
     FOREIGN KEY(MenuID) REFERENCES Menu(MenuID) ON DELETE CASCADE
@@ -91,15 +91,15 @@ CREATE TABLE Users
     
     CREATE TABLE Describes
 	(DishID			VARCHAR(5) NOT NULL,
-    FoodName		VARCHAR(20) NOT NULL,
-    PRIMARY KEY(DishID,FoodName),
+    FoodType		VARCHAR(20) NOT NULL,
+    PRIMARY KEY(DishID,FoodType),
     FOREIGN KEY(DishID) REFERENCES Dish(DishID) ON DELETE CASCADE
 	);
 
 CREATE TABLE Theme
 	(FeastID		VARCHAR(5),
-    FoodName		VARCHAR(40),
-    PRIMARY KEY(FeastID,FoodName),
+    FoodType		VARCHAR(40),
+    PRIMARY KEY(FeastID,FoodType),
     FOREIGN KEY(FeastID) REFERENCES Feast(FeastID) ON DELETE CASCADE
 	);
     
@@ -111,7 +111,13 @@ CREATE TABLE Attendee
     FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 	);
 
-CREATE VIEW FoodTypes AS SELECT FoodName FROM Theme NATURAL JOIN Likes NATURAL JOIN Describes GROUP BY FoodName;
+CREATE VIEW FoodTypes AS
+SELECT FoodType FROM Theme 
+UNION 
+SELECT FoodType FROM Likes 
+UNION 
+SELECT FoodType FROM Describes 
+GROUP BY FoodType;
 
 INSERT Brand VALUES
 	('B0', 'McDonald\'s'),
@@ -158,22 +164,22 @@ INSERT Feast VALUES
     
 INSERT Menu VALUES
 	('M0','R0','Breakfast'),
-    ('M1','R0','Normal'),
+    ('M1','R0','All-Day'),
     ('M2','R6','Lunch'),
     ('M3','R7','Lunch'),
     ('M4','R8','Lunch'),
     ('M5','R9','Lunch'),
     ('M6','R10','Lunch'),
-    ('M7','R1','Normal'),
-    ('M8','R2','Normal'),
-    ('M9','R3','Normal'),
-    ('M10','R4','Normal'),
+    ('M7','R1','All-Day'),
+    ('M8','R2','All-Day'),
+    ('M9','R3','All-Day'),
+    ('M10','R4','All-Day'),
     #It is on purpose that KFC JYD does not have a menu
-    ('M11','R6','Normal'),
-    ('M12','R7','Normal'),
-    ('M13','R8','Normal'),
-    ('M14','R9','Normal'),
-    ('M15','R10','Normal'),
+    ('M11','R6','All-Day'),
+    ('M12','R7','All-Day'),
+    ('M13','R8','All-Day'),
+    ('M14','R9','All-Day'),
+    ('M15','R10','All-Day'),
     ('M16','R9','Wine-card');
 
 INSERT Friends VALUES
@@ -258,14 +264,39 @@ INSERT Rating VALUES
     ('U6','R9','8'),
     ('U6','R10','9');
     
-#INSERT Dish VALUES
-	#('D0','M1','Cheeseburger','12'),
-    #('D1','M1','Hamburger','10'),
-    #('D2','M7','Cheeseburger','12'),
-    #('D3','M7','McPizza','30'),
+INSERT Dish VALUES
+	('D0','M1','Cheeseburger','12'),
+    ('D1','M1','Hamburger','10'),
+    ('D2','M7','Cheeseburger','12'),
+    ('D3','M7','McPizza','30'),
+    ('D4','M9','Bucket','200'),
+    ('D5','M9','Vegan fried "chicken"','100'),
+    ('D6','M9','Chicken Wrap','70'),
+    ('D7','M10','Bucket','180'),
+    ('D8', 'M4','Bolognese Pizza','49'),
+    ('D9','M13','Durum ekstra dressing','50'),
+    ('D10','M13','Bolognese Pizza','70'),
+    ('D11','M15','8 piece calamari','80'),
+    ('D12','M15','Penne Arrabiata','100');
     
+INSERT Describes VALUES
+	('D0','Burger'),
+    ('D1','Burger'),
+    ('D2','Burger'),
+    ('D3','Pizza'),
+    ('D3','Fast Food'),
+    ('D3','Italian'),
+    ('D4','Chicken'),
+    ('D5','Vegan'),
+    ('D6','Chicken'),
+    ('D7','Chicken'),
+    ('D8','Pizza'),
+    ('D9','Turkish'),
+    ('D10','Pizza'),
+    ('D11','Italian'),
+    ('D12','Italian'),
+    ('D12','Pasta');
     
-#INSERT Describes VALUES
 
 INSERT Theme VALUES
 	('F0','Appetizers'),

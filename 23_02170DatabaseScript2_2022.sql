@@ -4,6 +4,8 @@
 # (3) the statements used to create and apply functions, procedures, triggers, and events (as in section 9)
 USE FoodBuddies;
 
+SELECT * FROM FoodTypes;
+
 #Finding the average score of all restaurants with an average score over 6
 SELECT RestaurantName,AVG(Score) AS Average FROM Restaurant NATURAL JOIN Rating GROUP BY RestaurantName  HAVING AVG(Score) > 6 ORDER BY Average DESC;
 
@@ -13,7 +15,7 @@ SELECT CONCAT(FirstName, ' ', LastName) AS Critic,Score,RestaurantID FROM Users 
 ) AS x;
 
 #Showing everyone that likes pizza
-SELECT FirstName,LastName,FoodName FROM Users NATURAL JOIN Likes WHERE FoodName = 'Pizza';
+SELECT FirstName,LastName,FoodType FROM Users NATURAL JOIN Likes WHERE FoodType = 'Pizza';
 
 #Showing everybody going to an event at a restaurant owned by the Mafia with the soonest event first
 SELECT x.Attendee,x.EventName,RestaurantName,Country,ZipCode,CONCAT(StreetName, ' ', StreetNr) AS Address,x.Dato FROM Restaurant NATURAL JOIN Brand NATURAL JOIN
