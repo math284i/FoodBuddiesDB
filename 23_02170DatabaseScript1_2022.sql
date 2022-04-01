@@ -1,4 +1,6 @@
+DROP DATABASE IF EXISTS FoodBuddies;
 CREATE DATABASE FoodBuddies;
+USE FoodBuddies;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS Theme;
@@ -15,6 +17,7 @@ DROP TABLE IF EXISTS Likes;
 DROP TABLE IF EXISTS FoodType;
 DROP TABLE IF EXISTS Describes;
 DROP TABLE IF EXISTS Dish;
+DROP VIEW IF EXISTS FoodTypes;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE Brand
@@ -37,7 +40,7 @@ CREATE TABLE Users
 	 Dato			DATE,
 	 StartTime		TIME,
 	 EndTime		TIME,
-	 PRIMARY KEY(TimeSlotID, DayCode, StartTime)
+	 PRIMARY KEY(TimeSlotID, Dato, StartTime)
 	);
     
     CREATE TABLE Restaurant
@@ -46,7 +49,7 @@ CREATE TABLE Users
     AverageRating	DECIMAL(3,1),
     RestaurantName	VARCHAR(20),
     Country			VARCHAR(20),
-    ZipCode			INT(10),
+    ZipCode			VARCHAR(10),
     StreetName		VARCHAR(40),
     StreetNr		VARCHAR(4),
     PRIMARY KEY(RestaurantID),
@@ -57,7 +60,7 @@ CREATE TABLE Users
 	(FeastID		VARCHAR(5),
     TimeSlotID		VARCHAR(5) NOT NULL,
     RestaurantID	VARCHAR(5) NOT NULL,
-    EventName		VARCHAR(20),
+    EventName		VARCHAR(40),
     PRIMARY KEY(FeastID),
     FOREIGN KEY(TimeSlotID) REFERENCES TimeSlot(TimeSlotID) ON DELETE CASCADE,
     FOREIGN KEY(RestaurantID) REFERENCES Restaurant(RestaurantID) ON DELETE CASCADE
@@ -128,22 +131,20 @@ CREATE TABLE Attendee
 
 CREATE VIEW FoodTypes AS SELECT FoodName FROM Theme NATURAL JOIN Likes NATURAL JOIN Describes GROUP BY FoodName;
 
-CREATE VIEW Ratings AS SELECT CONCAT(FirstName, ' ', LastName) AS Critic,Score,RestaurantName FROM Users NATURAL JOIN Rating NATURAL JOIN Restaurant;
-
 INSERT Brand VALUES
-	('0', 'Mc Donald\'s'),
-    ('1','Mediterraneo'),
-	('2','Mafia'),
-	('3', 'KFC');
+	('B0', 'McDonald\'s'),
+    ('B1','Mediterraneo'),
+	('B2','Mafia'),
+	('B3', 'KFC');
     
 INSERT Users VALUES
-    ('0','Anders','Keller Poulsen','Denmark','2750'),
-    ('1','Mathias','Rerup-Dyberg','Denmark','3500'),
-    ('2','Markus','Jegstrup','Denmark','3500'),
-    ('3','Rasmus','Højmark Fischer','Denmark','2800'),
-    ('4','Alexander','Thomsen Skovsende','Denmark','3500'),
-    ('5','Mario','Mario Bros','Italy','2500'),
-    ('6','Luigi','Mario Bros','Italy','2500');
+    ('U0','Anders','Keller Poulsen','Denmark','2750'),
+    ('U1','Mathias','Rerup-Dyberg','Denmark','3500'),
+    ('U2','Markus','Jegstrup','Denmark','3500'),
+    ('U3','Rasmus','Højmark Fischer','Denmark','2800'),
+    ('U4','Alexander','Thomsen Skovsende','Denmark','3500'),
+    ('U5','Mario','Mario Bros','Italy','2500'),
+    ('U6','Luigi','Mario Bros','Italy','2500');
 
 INSERT TimeSlot VALUES
 	('A','2022-04-07','17:00','19:00'),
@@ -151,160 +152,160 @@ INSERT TimeSlot VALUES
 	('C','2022-04-09','8:00','11:00');
 
 INSERT Restaurant VALUES
-	('0','0','0','Maccen','Denmark','2820','Nybrovej','2'),
-    ('1','0','0','il McDonald','Italy','53100','Via Fiorentina','122'),
-    ('2','1','0','Mediterraneo','Denmark','3500','Ballerupvej','16'),
-    ('3','3','0','KFC CPH ','Denmark','1550','Rådhuspladesen','55'),
-    ('4','3','0','KFC FYN','Denmark','5220','Ejbygade','2'),
-    ('5','3','0','KFC JYD','Denmark','8210','Blomstervej','2k'),
-    ('6','2','0','La Sosta','2800','Carlshøjvej','49'),
-    ('7','2','0','Roma','2760','Liljevangsvej','6'),
-    ('8','2','0','Baba\'s Pizza','2400','Frederiksgade','4'),
-    ('9','2','0','Bona Pizza','00186','Via del Portico d\'Ottavia','7'),
-    ('10','2','0','Panta Pizza','53100','Via Pantaneto','80');
+	('R0','B0','0','Maccen','Denmark','2820','Nybrovej','2'),
+    ('R1','B0','0','il McDonald','Italy','53100','Via Fiorentina','122'),
+    ('R2','B1','0','Mediterraneo','Denmark','3500','Ballerupvej','16'),
+    ('R3','B3','0','KFC CPH ','Denmark','1550','Rådhuspladesen','55'),
+    ('R4','B3','0','KFC FYN','Denmark','5220','Ejbygade','2'),
+    ('R5','B3','0','KFC JYD','Denmark','8210','Blomstervej','2k'),
+    ('R6','B2','0','La Sosta','Denmark','2800','Carlshøjvej','49'),
+    ('R7','B2','0','Roma','Denmark','2760','Liljevangsvej','6'),
+    ('R8','B2','0','Baba\'s Pizza','Denmark','2400','Frederiksgade','4'),
+    ('R9','B2','0','Bona Pizza','Italy','00186','Via del Portico d\'Ottavia','7'),
+    ('R10','B2','0','Panta Pizza','Italy','53100','Via Pantaneto','80');
 
 INSERT Feast VALUES
-	('0','A','9','Pre-dinner wine tasting'),
-    ('1','A','5','Kids eat for free with paying adult'),
-    ('2','A','0','Burger and beer'),
-    ('3','B','0','2 for 1 cheeseburgers'),
-    ('4','B','1','2 for 1 cheeseburgers'),
-    ('5','B','10','Traditional dinner'),
-    ('6','C','3','Hangover brunch'),
-    ('7','C','7','Weekendtilbud');
+	('F0','A','R9','Pre-dinner wine tasting'),
+    ('F1','A','R5','Kids eat for free with paying adult'),
+    ('F2','A','R0','Burger and beer'),
+    ('F3','B','R0','2 for 1 cheeseburgers'),
+    ('F4','B','R1','2 for 1 cheeseburgers'),
+    ('F5','B','R10','Traditional dinner'),
+    ('F6','C','R3','Hangover brunch'),
+    ('F7','C','R7','Weekendtilbud');
     
 INSERT Menu VALUES
-	('0','0','Breakfast'),
-    ('1','0','All-day'),
-    ('2','6','Lunch'),
-    ('3','7','Lunch'),
-    ('4','8','Lunch'),
-    ('5','9','Lunch'),
-    ('6','10','Lunch'),
-    ('7','1','All-day'),
-    ('8','2','Normal'),
-    ('9','3','Normal'),
-    ('10','4','Normal'),
+	('M0','R0','Breakfast'),
+    ('M1','R0','Normal'),
+    ('M2','R6','Lunch'),
+    ('M3','R7','Lunch'),
+    ('M4','R8','Lunch'),
+    ('M5','R9','Lunch'),
+    ('M6','R10','Lunch'),
+    ('M7','R1','Normal'),
+    ('M8','R2','Normal'),
+    ('M9','R3','Normal'),
+    ('M10','R4','Normal'),
     #It is on purpose that KFC JYD does not have a menu
-    ('11','6','Normal'),
-    ('12','7','Normal'),
-    ('13','8','Normal'),
-    ('14','9','Normal'),
-    ('15','10','Normal'),
-    ('16','9','Wine-card');
+    ('M11','R6','Normal'),
+    ('M12','R7','Normal'),
+    ('M13','R8','Normal'),
+    ('M14','R9','Normal'),
+    ('M15','R10','Normal'),
+    ('M16','R9','Wine-card');
 
 INSERT Friends VALUES
-    ('0','5'),
-    ('5','0'),
-    ('2','3'),
-    ('3','2'),
-    ('1','4'),
-    ('4','1'),
-    ('1','2'),
-    ('2','1');
+    ('U0','U5'),
+    ('U5','U0'),
+    ('U2','U3'),
+    ('U3','U2'),
+    ('U1','U4'),
+    ('U4','U1'),
+    ('U1','U2'),
+    ('U2','U1');
     
 INSERT Likes VALUES
-    ('0','Italian'),
-    ('0','Burger'),
-    ('0','Chinese'),
-    ('0','Fish'),
-    ('1','Burger'),
-    ('1','Chicken'),
-    ('1','Pizza'),
-    ('1','Fast Food'),
-    ('1','Beer'),
-    ('2','Italian'),
-    ('2','Pizza'),
-    ('2','Beer'),
-    ('3','Italian'),
-    ('3','Burger'),
-    ('3','Fish'),
-    ('4','Italian'),
-    ('4','Pizza'),
-    ('4','Wine'),
-    ('5','Italian'),
-    ('5','Fast Food'),
-    ('5','Pizza'),
-    ('5','Wine'),
-    ('6','Vegetarian'),
-    ('6','Italian'),
-    ('6','Pizza'),
-    ('6','Wine');
+    ('U0','Italian'),
+    ('U0','Burger'),
+    ('U0','Chinese'),
+    ('U0','Fish'),
+    ('U1','Burger'),
+    ('U1','Chicken'),
+    ('U1','Pizza'),
+    ('U1','Fast Food'),
+    ('U1','Beer'),
+    ('U2','Italian'),
+    ('U2','Pizza'),
+    ('U2','Beer'),
+    ('U3','Italian'),
+    ('U3','Burger'),
+    ('U3','Fish'),
+    ('U4','Italian'),
+    ('U4','Pizza'),
+    ('U4','Wine'),
+    ('U5','Italian'),
+    ('U5','Fast Food'),
+    ('U5','Pizza'),
+    ('U5','Wine'),
+    ('U6','Vegetarian'),
+    ('U6','Italian'),
+    ('U6','Pizza'),
+    ('U6','Wine');
     
 INSERT Rating VALUES
-	('0','0','10'),
-    ('0','3','3'),
-    ('0','6','8'),
-    ('0','7','6'),
-    ('0','8','9'),
-    ('1','0','10'),
-    ('1','3','8'),
-    ('1','4','8'),
-    ('1','5','7'),
-    ('1','6','8'),
-    ('1','7','7'),
-    ('2','0','4'),
-    ('2','2','8'),
-    ('2','3','1'),
-    ('2','4','1'),
-    ('2','5','1'),
-    ('2','7','7'),
-    ('3','0','6'),
-    ('3','2','10'),
-    ('3','6','5'),
-    ('3','8','7'),
-    ('4','0','3'),
-    ('4','1','4'),
-    ('4','2','7'),
-    ('4','4','4'),
-    ('4','5','1'),
-    ('4','6','4'),
-    ('4','8','5'),
-    ('4','9','10'),
-    ('4','10','9'),
-    ('5','0','7'),
-    ('5','1','9'),
-    ('5','2','6'),
-    ('5','3','4'),
-    ('5','6','10'),
-    ('5','7','9'),
-    ('5','8','4'),
-    ('5','9','6'),
-    ('5','10','7'),
-    ('6','1','3'),
-    ('6','9','8'),
-    ('6','10','9');
+	('U0','R0','10'),
+    ('U0','R3','3'),
+    ('U0','R6','8'),
+    ('U0','R7','6'),
+    ('U0','R8','9'),
+    ('U1','R0','10'),
+    ('U1','R3','8'),
+    ('U1','R4','8'),
+    ('U1','R5','7'),
+    ('U1','R6','8'),
+    ('U1','R7','7'),
+    ('U2','R0','4'),
+    ('U2','R2','8'),
+    ('U2','R3','1'),
+    ('U2','R4','1'),
+    ('U2','R5','1'),
+    ('U2','R7','7'),
+    ('U3','R0','6'),
+    ('U3','R2','10'),
+    ('U3','R6','5'),
+    ('U3','R8','7'),
+    ('U4','R0','3'),
+    ('U4','R1','4'),
+    ('U4','R2','7'),
+    ('U4','R4','4'),
+    ('U4','R5','1'),
+    ('U4','R6','4'),
+    ('U4','R8','5'),
+    ('U4','R9','10'),
+    ('U4','R10','9'),
+    ('U5','R0','7'),
+    ('U5','R1','9'),
+    ('U5','R2','6'),
+    ('U5','R3','4'),
+    ('U5','R6','10'),
+    ('U5','R7','9'),
+    ('U5','R8','4'),
+    ('U5','R9','6'),
+    ('U5','R10','7'),
+    ('U6','R1','3'),
+    ('U6','R9','8'),
+    ('U6','R10','9');
     
-INSERT Dish VALUES
-	('0','1','Cheeseburger','12'),
-    ('1','1','Hamburger','10'),
-    ('2','7','Cheeseburger','12'),
-    ('3','7','McPizza','30'),
+#INSERT Dish VALUES
+	#('D0','M1','Cheeseburger','12'),
+    #('D1','M1','Hamburger','10'),
+    #('D2','M7','Cheeseburger','12'),
+    #('D3','M7','McPizza','30'),
     
     
-INSERT Describes VALUES
+#INSERT Describes VALUES
 
 INSERT Theme VALUES
-	('0','Appetizers'),
-    ('0','Wine'),
-    ('2','Fast food'),
-    ('2','Drinks'),
-    ('3','Burger'),
-    ('4','Burger'),
-    ('5','Italian'),
-    ('5','Pizza'),
-    ('5','Wine'),
-    ('6', 'Brunch');
+	('F0','Appetizers'),
+    ('F0','Wine'),
+    ('F2','Fast food'),
+    ('F2','Drinks'),
+    ('F3','Burger'),
+    ('F4','Burger'),
+    ('F5','Italian'),
+    ('F5','Pizza'),
+    ('F5','Wine'),
+    ('F6', 'Brunch');
 
 INSERT Attendee VALUES
-	('0','4'),
-    ('0','0'),
-    ('0','3'),
-    ('2','2'),
-    ('2','1'),
-    ('3','1'),
-    ('5','5'),
-    ('5','6'),
-    ('5','4'),
-    ('6','0'),
-    ('7','1');
+	('F0','U4'),
+    ('F0','U0'),
+    ('F0','U3'),
+    ('F2','U2'),
+    ('F2','U1'),
+    ('F3','U1'),
+    ('F5','U5'),
+    ('F5','U6'),
+    ('F5','U4'),
+    ('F6','U0'),
+    ('F7','U1');
